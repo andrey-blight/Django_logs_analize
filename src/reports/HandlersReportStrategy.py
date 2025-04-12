@@ -1,4 +1,5 @@
 import re
+from multiprocessing import Pool
 
 from reports import ReportStrategy
 
@@ -13,9 +14,12 @@ class HandlersReportStrategy(ReportStrategy):
 
     def generate_report(self, logs: list[str]) -> str:
         answer = dict()
-        for file in logs:
-            data = self._parse_file(file)
-            self._merge(answer, data)
+        with Pool() as pool:
+            # use multiprocess for fast running
+            results = pool.map(self._parse_file, logs)
+
+            for data in results:
+                self._merge(answer, data)
         return self._stringify(answer)
 
     def _parse_file(self, file: str) -> dict[str, dict[str, int]]:
