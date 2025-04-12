@@ -49,5 +49,31 @@
 
 ### Пример отчета
 
-![main_example.jpg](img/main_example_11zon.jpg)
-## Добавление 
+![main_example.png](img/main_example.png)
+
+## Добавление нового отчета
+
+Для добавления нового отчета нужно совершить несколько простых действий:
+
+1) Отнаследовать класс нового отчета от reports/ReportStrategy и перегрузить generate_report
+2) Добавить новую стратегию в класс фабрики, например вот так:
+
+```python
+class ReportFactory:
+    @staticmethod
+    def get_report(report_name: str) -> ReportStrategy | None:
+        name = report_name.lower()
+        if name == "handlers":
+            return HandlersReportStrategy()
+        elif name == "new_report":
+            return NewReportStrategy()
+        else:
+            raise ValueError("No such report exist")
+
+```
+
+## Тестирование
+
+Тесты были написано с помощью библиотеке pytest и хранятся в папке tests. Покрытие тестами составляет 97% по pytest-cov.
+
+![testing.png](img/testing.png)
